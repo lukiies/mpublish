@@ -22,6 +22,7 @@ mpublish.sh is wrote and tested for debian squeeze (6.0) server.
 In server You have to install nodejs, forever for nodejs, mongodb working at standard 27017 port and nginx server.
 You can do this with this simple way:
 
+```sh
 #install curl
 apt-get install curl
 
@@ -72,6 +73,7 @@ cp nodejs /etc/init.d &&
 chmod +x /etc/init.d/nodejs
 cd /tmp &&
 rm -fr mpublish
+```
 
 #into your local computer
 Copy mpublish.sh script to local computer and make this executable.
