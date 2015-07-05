@@ -73,6 +73,7 @@ chmod +x /etc/init.d/nodejs
 cd /tmp &&
 rm -fr mpublish
 
-Copy mpublish.sh script into your local computer and make this executable.
+#into your local computer
+Copy mpublish.sh script to local computer and make this executable.
 Now You are ready to publish your meteor application into own private web server.
 enjoy :)
