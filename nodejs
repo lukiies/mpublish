@@ -1,0 +1,154 @@
+#!/bin/sh
+#
+# Startup and util script for nodejs vps in debian server nginx
+# by lukiies@gmail.com
+#
+# prerequisites
+#	current nodejs installed in /opt/nodes/current directory with installed forever (write: npm install forever)
+#	installed nginx server
+#	installed mongodb like a strict server (with /etc/init.d/mongodb startup script and working port 27017)
+#	/var/lib/node directory where you can leave nodejs application - every app in separate folder which has name conversion <site_full_name>:<port_for_app_to_work>
+#
+# parameters:
+#	start,stop,restart - like usual, finaly it's debian startup script
+#	new <site> <port> - create new proxy tunnel, that tells nginx server to transfer connection to domain <site> to localhost:<port>
+#	newnr - return new number od first free port for future proxy
+#	checknodes - like start simulation - it only launch unstarted node conteners
+#
+# short description:
+# 	You can save in /var/lib/node directory nodejs application, every in other folder named <site_full_name>:<port_for_app_to_work>.
+#	Follow that You can simply use /etc/init.d/nodejs start|stop|checknodes|restart to manage that on server layer (without pty).
+#	Script looks at /var/lib/node and start every right-named directory with nodejs application.
+#	Extended feature of script is to manage in creating new nodejs app with corresponing to configure nginx proxy server for that.
+#	You can use /etc/init.d/nodejs newnr - it returns new available port number, it can be used to lauch new nodejs app.
+#	Follow that you can use /etc/init.d/nodejs new <site> <port> - to make proper configuration and automatically restart nginx to get changes happend.
+#
+
+#
+#. /lib/lsb/init-functions
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/nodes/current/bin
+
+start() {
+    echo "Starting nodejs's..."
+    run
+}
+
+run() {
+    pw=`pwd`
+    for i in `ls -1 /var/lib/node/ | grep ':' | grep -v .log`; do
+	i=`basename $i`
+	name=`echo "$i"|sed 's/\(.*\):\(.*\)/\1/g'`
+	port=`echo "$i"|sed 's/\(.*\):\(.*\)/\2/g'`
+	if [ ! "`ps aux | grep $i | grep -v grep`" ];then
+	    cd /var/lib/node/$i
+	    export MONGO_URL="mongodb://localhost:27017/$name"
+	    export ROOT_URL="http://$name"
+	    export PORT=$port
+	    forever --minUptime=1000ms --spinSleepTime=5000ms start main.js >>/tmp/node.$name 2>&1
+	fi
+    done
+    cd $pw
+}
+
+stop() {
+    echo "Stoping nodejs's..."
+    pw=`pwd`
+    echo 'stop nodejs' > /tmp/node
+    for i in `ls -1 /var/lib/node/ | grep ':' | grep -v .log`; do
+	i=`basename $i`
+	name=`echo "$i"|sed 's/\(.*\):\(.*\)/\1/g'`
+	port=`echo "$i"|sed 's/\(.*\):\(.*\)/\2/g'`
+	if [ "`ps aux | grep $i`" ];then
+	    echo "  stoping nodejs app /var/lib/node/$name at port $port" >>/tmp/node
+	    cd /var/lib/node/$i
+	    forever stop main.js >>/tmp/node.$name 2>&1
+	fi
+    done
+    killall node >/dev/null 2>&1
+    cd $pw
+}
+
+restart() {
+	stop
+	start
+}
+
+checknodes() {
+    run
+}
+
+new() {
+    site=$2
+    port=$3
+    if [ ! "$site" ] || [ ! "$port" ]; then
+	echo "new() - error: not enought params, ex:   /etc/init.d/nodejs new <site> <port>..."
+	exit 1
+    fi
+    
+    http_upgrade='$http_upgrade'
+    connection_upgrade='$connection_upgrade'
+    remote_addr='$remote_addr'
+    host='$host'
+    
+    if ! pushd /etc/nginx/sites-available || \
+	! echo "server {
+    server_name $site;
+    access_log /var/log/nginx/$site.access;
+    error_log /var/log/nginx/$site.error error;
+    location / {
+	proxy_pass http://localhost:$port;
+	proxy_set_header X-Real-IP $remote_addr;  # http://wiki.nginx.org/HttpProxyModule
+	proxy_set_header Host $host;  # pass the host header - http://wiki.nginx.org/HttpProxyModule#proxy_pass
+	proxy_http_version 1.1;  # recommended with keepalive connections - http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_http_version
+	# WebSocket proxying - from http://nginx.org/en/docs/http/websocket.html
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection $connection_upgrade;
+    }
+}" > $site || \
+    ! popd || \
+    ! ln -s /etc/nginx/sites-available/$site /etc/nginx/sites-enabled/$site || \
+    ! /etc/init.d/nginx restart >/dev/null 2>&1
+    then
+	echo "new() - error .."
+	exit 1
+    fi
+    exit 0
+}
+
+newnr() {
+    # return next available port number for new service
+    tmpnr=`(cat /etc/nginx/sites-available/*) | grep 'proxy_pass http' | cut -d: -f3 | sort | uniq | tail -n1 | sed 's/;//g'`
+    if [ ! "$tmpnr" ];then
+	newnr=3000
+    else
+	newnr=`expr $tmpnr + 1`
+    fi
+    echo $newnr;
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	new)
+		new $*
+		;;
+	newnr)
+		newnr $*
+		;;
+	checknodes)
+		checknodes
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|restart|new|newnr|checknodes}"
+		exit 1
+esac
+exit 0
+
