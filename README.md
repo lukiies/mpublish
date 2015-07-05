@@ -11,7 +11,7 @@ To make mpublish.sh work well, second script which works in server site - /etc/i
 
 <h2>Howto, Simplest way:</h2>
 - write meteor application in your mac and go to this directory
-- mpublish.sh --server=root@your-web.org --dir=/var/lib/node --site=site1.your-web.org
+- mpublish.sh --server=root@your-web.org --site=site1.your-web.org
 
 This is simple as that. You can now go in browser to site1.your-web.org and application should just works. In the background mpublish.sh:
 - create and send bundle of meteor app to your server
