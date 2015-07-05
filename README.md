@@ -22,7 +22,6 @@ mpublish.sh is wrote and tested for debian squeeze (6.0) server.
 In server You have to install nodejs, forever for nodejs, mongodb working at standard 27017 port and nginx server.
 You can do this with this simple way:
 
-<code>
 #install curl
 apt-get install curl
 
@@ -64,9 +63,16 @@ apt-get update &&
 apt-get install mongodb
 
 #install mpublish scripts
-mkdir -p /var/lib/node
-copy nodejs into /etc/init.d && chmod +x /etc/init.d/nodejs
-</code>
+mkdir -p /var/lib/node && 
+apt-get install git &&
+cd /tmp &&
+git clone git://github.com/lukiies/mpublish.git && 
+cd mpublish &&
+cp nodejs /etc/init.d && 
+chmod +x /etc/init.d/nodejs
+cd /tmp &&
+rm -fr mpublish
 
+Copy mpublish.sh script into your local computer and make this executable.
 Now You are ready to publish your meteor application into own private web server.
 enjoy :)
