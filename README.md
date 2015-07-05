@@ -27,43 +27,46 @@ You can do this with this simple way:
 apt-get install curl
 
 #install nginx server
-cd /tmp && \
-curl http://nginx.org/keys/nginx_signing.key > nginx_signing.key && \
-apt-key add nginx_signing.key && \
-rm nginx_signing.key && \
-echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && \
-echo "deb-src http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && \
-wget http://www.dotdeb.org/dotdeb.gpg && \
-apt-key add dotdeb.gpg && \
-rm -f dotdeb.gpg && \
-apt-get update && \
-apt-get install nginx && \
-cat /etc/nginx/nginx.conf|sed 's/http {/http {\n\tmap $http_upgrade $connection_upgrade { default upgrade; ""      close; }\n/g' >/tmp/nginx.conf && \
-cp -f /tmp/nginx.conf /etc/nginx/nginx.conf && \
+cd /tmp && 
+curl http://nginx.org/keys/nginx_signing.key > nginx_signing.key && 
+apt-key add nginx_signing.key && 
+rm nginx_signing.key && 
+echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && 
+echo "deb-src http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && 
+wget http://www.dotdeb.org/dotdeb.gpg && 
+apt-key add dotdeb.gpg && 
+rm -f dotdeb.gpg && 
+apt-get update && 
+apt-get install nginx && 
+cat /etc/nginx/nginx.conf|sed 's/http {/http {\n\tmap $http_upgrade $connection_upgrade { default upgrade; ""      close; }\n/g' >/tmp/nginx.conf && 
+cp -f /tmp/nginx.conf /etc/nginx/nginx.conf && 
 /etc/init.d/nginx restart
 
 #install nodejs - you can change the way of installing nodejs and get another version if you like
-cd /tmp && \
-curl https://nodejs.org/dist/v0.12.6/node-v0.12.6-linux-x86.tar.gz > node-v0.12.6-linux-x86.tar.gz && \
-mkdir -p /opt/node  && \
-tar zxf node-v0.12.6-linux-x86.tar.gz -C /opt/node/  && \
-rm node-v0.12.6-linux-x86.tar.gz  && \
-cd /opt/node  && \
+cd /tmp && 
+curl https://nodejs.org/dist/v0.12.6/node-v0.12.6-linux-x86.tar.gz > node-v0.12.6-linux-x86.tar.gz && 
+mkdir -p /opt/node  && 
+tar zxf node-v0.12.6-linux-x86.tar.gz -C /opt/node/  && 
+rm node-v0.12.6-linux-x86.tar.gz  && 
+cd /opt/node  && 
 ln -sfn node-v0.12.6-linux-x86 current
 
 #node postrequisites
-cd /usr/local/bin && \
-ln -s /opt/node/current/bin/npm && \
-ln -s /opt/node/current/bin/node
+cd /usr/local/bin && 
+ln -s /opt/node/current/bin/npm && 
+ln -s /opt/node/current/bin/node &&
 npm install -g forever
 
 #install mongodb
-apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10 && \
-echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list && \
-apt-get update && \
+apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10 && 
+echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | tee && /etc/apt/sources.list.d/mongodb-org-3.0.list && 
+apt-get update && 
 apt-get install mongodb
 
 #install mpublish scripts
 mkdir -p /var/lib/node
 copy nodejs into /etc/init.d && chmod +x /etc/init.d/nodejs
 </code>
+
+Now You are ready to publish your meteor application into own private web server.
+enjoy :)
