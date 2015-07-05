@@ -1,15 +1,15 @@
 <h1>mpublish.sh</h1>
 
-One command way to publish meteor application in Your private web server.
+<b>One command way to publish meteor application in Your private web server.</b>
 
-Why?
+<h2>Why?</h2>
 Meteor team work at very big, safe and excellent Galaxy module. This will be awesome - when it’ll be ready. mpublish.sh script is well-enough utility which make Your local meteor application running as a full-web site with one command way. 
 
-Description
+<h2>Description</h2>
 You can have many working application in single web server - everyone with other site domain name. For example: test1.yourserver.com, test2.yourserver2.nl etc. Every web call is managing with nginx server with proper proxy configuration. If You call test1.yourserver.com nginx transfer your connection to application working on the separate port number.
 To make mpublish.sh working well i had have to write second script planed to work in server site - /etc/init.d/nodejs. This script manage working every nodejs application located on your server and make for You proper reconfiguration of nginx server.
 
-Howto, Simplest way:
+<h2>Howto, Simplest way:</h2>
 - write meteor application in your mac and go to this directory
 - mpublish.sh --server=root@your-web.org --dir=/var/lib/node --site=site1.your-web.org
 
