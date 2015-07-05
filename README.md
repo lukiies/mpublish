@@ -17,51 +17,53 @@ Is that simple. You can now go in browser to site1.your-web.org and application 
 To make Your web server working, You have to do obviously some simple steps. For Your convenience mpublish.sh have option --genconfig - that saves Your command parameters in meteor app directory and follow that You can use mpublish.sh invokation without any params.
 mpublish.sh have simple command line help of course.
 
-Howto, server configuration
+<h2>Howto, server configuration</h2>
 mpublish.sh is wrote and tested for debian squeeze (6.0) server.
 In server You have to install nodejs, forever for nodejs, mongodb working at standard 27017 port and nginx server.
 You can do this with this simple way:
 
-# install curl
-apt-get install curl
-
-# install nginx server
-cd /tmp && \
-curl http://nginx.org/keys/nginx_signing.key > nginx_signing.key && \
-apt-key add nginx_signing.key && \
-rm nginx_signing.key && \
-echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && \
-echo "deb-src http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && \
-wget http://www.dotdeb.org/dotdeb.gpg && \
-apt-key add dotdeb.gpg && \
-rm -f dotdeb.gpg && \
-apt-get update && \
-apt-get install nginx && \
-cat /etc/nginx/nginx.conf|sed 's/http {/http {\n\tmap $http_upgrade $connection_upgrade { default upgrade; ""      close; }\n/g' >/tmp/nginx.conf && \
-cp -f /tmp/nginx.conf /etc/nginx/nginx.conf && \
-/etc/init.d/nginx restart
-
+<code>
+# install curl<br>
+apt-get install curl<br>
+<br>
+# install nginx server<br>
+cd /tmp && \<br>
+curl http://nginx.org/keys/nginx_signing.key > nginx_signing.key && \<br>
+apt-key add nginx_signing.key && \<br>
+rm nginx_signing.key && \<br>
+echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && \<br>
+echo "deb-src http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list && \<br>
+wget http://www.dotdeb.org/dotdeb.gpg && \<br>
+apt-key add dotdeb.gpg && \<br>
+rm -f dotdeb.gpg && \<br>
+apt-get update && \<br>
+apt-get install nginx && \<br>
+cat /etc/nginx/nginx.conf|sed 's/http {/http {\n\tmap $http_upgrade $connection_upgrade { default upgrade; ""      close; }\n/g' >/tmp/nginx.conf && \<br>
+cp -f /tmp/nginx.conf /etc/nginx/nginx.conf && \<br>
+/etc/init.d/nginx restart<br>
+<br>
 # install nodejs - you can change the way of installing nodejs and get another version if you like
-cd /tmp && \
+cd /tmp && \<br>
 curl https://nodejs.org/dist/v0.12.6/node-v0.12.6-linux-x86.tar.gz > node-v0.12.6-linux-x86.tar.gz && \
-mkdir -p /opt/node  && \
-tar zxf node-v0.12.6-linux-x86.tar.gz -C /opt/node/  && \
-rm node-v0.12.6-linux-x86.tar.gz  && \
-cd /opt/node  && \
-ln -sfn node-v0.12.6-linux-x86 current
-
-# node postrequisites
-cd /usr/local/bin && \
-ln -s /opt/node/current/bin/npm && \
-ln -s /opt/node/current/bin/node
-npm install -g forever
-
-# install mongodb
-apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10 && \
-echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list && \
-apt-get update && \
-apt-get install mongodb
-
-# install mpublish scripts
-mkdir -p /var/lib/node
-copy nodejs into /etc/init.d && chmod +x /etc/init.d/nodejs
+mkdir -p /opt/node  && \<br>
+tar zxf node-v0.12.6-linux-x86.tar.gz -C /opt/node/  && \<br>
+rm node-v0.12.6-linux-x86.tar.gz  && \<br>
+cd /opt/node  && \<br>
+ln -sfn node-v0.12.6-linux-x86 current<br>
+<br>
+# node postrequisites<br>
+cd /usr/local/bin && \<br>
+ln -s /opt/node/current/bin/npm && \<br>
+ln -s /opt/node/current/bin/node<br>
+npm install -g forever<br>
+<br>
+# install mongodb<br>
+apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10 && \<br>
+echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | tee<br> /etc/apt/sources.list.d/mongodb-org-3.0.list && \<br>
+apt-get update && \<br>
+apt-get install mongodb<br>
+<br>
+# install mpublish scripts<br>
+mkdir -p /var/lib/node<br>
+copy nodejs into /etc/init.d && chmod +x /etc/init.d/nodejs<br>
+</code>
