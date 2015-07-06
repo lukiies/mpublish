@@ -3,7 +3,7 @@
 <b>One command way to publish meteor application into Your private web server.</b>
 
 <h2>Why?</h2>
-Meteor team work at very big, safe and excellent Galaxy module which isnt ready yet. This will be awesome - when it’ll be ready. mpublish.sh script is well-enough utility which make Your local meteor application running as a full-web site with one command way - and is ready for know. Simple, unsafe - just work utility - that safe much your time.
+Meteor team work at very big, safe and excellent Galaxy module which isnt ready yet. This will be awesome - when it’ll be ready. mpublish.sh script is well-enough utility which make Your local meteor application running as a full-web site with one command way - and is ready for now. Simple, unsafe - just work utility - that saves a lot of your time.
 
 <h2>Description</h2>
 You can have many working application in single web server - everyone with other site domain name. For example: test1.yourserver.com, test2.yourserver2.nl etc. Every web call is managing with nginx server with proper proxy configuration. If You call test1.yourserver.com nginx transfer your connection to application working with separate port number.
